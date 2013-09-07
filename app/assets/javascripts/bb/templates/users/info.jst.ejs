@@ -1,0 +1,22 @@
+<div id='info_stuff' class="col-md-12"></div>
+  <div class="row">
+    <div id='editInfo' class="col-md-6">
+      <p>
+        Use <a target="_blank" href='http://daringfireball.net/projects/markdown/syntax'>markdown</a> syntax.
+        <a href='#' class='md_examples'>See examples.</a>
+        You can also use <a target="_blank" href='http://getbootstrap.com/css/'>Bootstrap's</a> stylings with your html.
+      </p>
+      <textarea class='input' cols='50' rows='15'><%= markdownInfo %></textarea>
+      <div style='margin-top:10px;'>
+        <button id='saveInfo' class='btn btn-info'>Save Info</button>
+        <button id='escInfo' class='btn btn-info'>Cancel</button>
+      </div>
+    </div>
+    <div id='preview' class="col-md-6">
+      <h3>Info Preview</h3>
+      <div id='preview_spot' class='enclose_info'>
+        <%= htmlInfo %>
+      </div>
+    </div>
+  </div>
+</div>

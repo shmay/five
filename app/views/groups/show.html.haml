@@ -1,0 +1,83 @@
+%p#notice= notice
+
+%h3= @group.name
+%h4 Info
+.info
+  = @group.info
+
+%h4
+  Members (#{@users.length})
+  %small= link_to "Invite users", users_path(zip: @location ? @location.zip : nil, invite_group:@group.id)
+
+- if @users.any?
+  %table.table.table-striped#users
+    %thead
+      %tr
+        %th #
+        %th Name
+        %th Games played
+        %th City
+        %th Last sign in
+    %tbody
+      - @users.each_with_index do |user,index|
+        - game_ids = user.preloaded_game_ids
+        %tr{id: "user_#{user.id}", class: user.is_group_admin ? 'success' : '', "data-game-id" => game_ids.join(',')}
+          %td= index + 1
+          %td= link_to user.name, profile_path(user)
+          -
+          %td
+            - if game_ids.any?
+              - game = @games.find {|g| g.id == game_ids.first}
+              = link_to game.name, game
+              - if game_ids.length > 1
+                - count = game_ids.length - 1
+                - word = count > 1 ? 'others' : 'other'
+                \& #{link_to "#{count.to_s} #{word}...", '#', class: 'moar_games tip', title: "Load the #{word}"}
+          %td
+            - if user.city
+              = link_to user.city, users_path(zip: user.zip)
+            - else
+              unknown
+
+          %td= user.current_sign_in_at ? "#{time_ago_in_words(user.current_sign_in_at)} ago" : 'never signed in'
+
+-if @grouping && @grouping.admin
+  #invitations
+    %h4
+      Open invitations (<span class='invite_count'>#{@invitations.length}</span>)
+      %small= link_to "Invite users", users_path(zip: @location ? @location.zip : nil, invite_group:@group.id)
+    - if @invitations.any?
+      %table.table.table-striped#invites
+        %thead
+          %tr
+            %th #
+            %th Sent
+            %th Invitee
+            %th Inviter
+            %th Actions
+        %tbody
+          - @invitations.each_with_index do |invite,index|
+            %tr{id: "invite_#{invite.id}"}
+              %td= index + 1
+              %td
+                = time_ago_in_words(invite.created_at)
+                ago
+              %td
+                - invitee = User.find invite.invitee_id
+                = link_to invitee.name, profile_path(invitee)
+              %td
+                - inviter = User.find invite.user_id
+                = link_to inviter.name, profile_path(inviter)
+              %td
+                = link_to 'revoke', '#', class: 'revoke_invite'
+
+
+- if @grouping && @grouping.admin
+  = link_to 'Edit', edit_group_path(@group)
+
+:javascript
+  $(function () {
+    var games = new App.GameList(#{@games.to_json(except:[:created_at, :updated_at])}, {options:true})
+    new App.UsersIndexView({games:games});
+    new App.InvitesIndexView();
+  })

@@ -1,0 +1,50 @@
+#profile{"data-id" => @user.id}
+  #name.col
+    %h4
+      %span.entry= @user.name
+      - if is_current_user?(@user)
+        %i.icon.icon-pencil.pointer.tip{title: 'edit your name', "data-placement" => "right"}
+
+  #info.col
+    %h4
+      Info
+      - if is_current_user?(@user)
+        %i.icon.icon-pencil.pointer.tip{title: 'edit your info', "data-placement" => "right"}
+    .entry
+      .enclose_info= @markdown.render(@user.info).html_safe
+
+  #location
+    %h4 Location
+    = @user.location.profile_address
+
+  #games.col
+    %h4
+      Games played (#{@user.games.count})
+      - if is_current_user?(@user)
+        <small>Can't find your game?  #{link_to "Add it", [:new, :game]} to our games list.</small>
+    #games_list
+      - @games.each do |game|
+        .label.label-primary.game_entry= link_to game.name, game
+
+  #groups.col
+    %h4 Groups (#{@user.groups.count})
+    %table.table.table-striped#invites
+      %thead
+        %tr
+          %th #
+          %th Group name
+          %th Member for
+          %th Group city
+      %tbody
+        - @groups.each_with_index do |group,index|
+          %tr{id: "group_#{group.id}"}
+            %td= index + 1
+            %td= link_to group.name, group
+            %td= time_ago_in_words(group.user_join_date)
+            %td #{group.city}, #{group.state}
+
+:javascript
+  $(function () {
+    var App = window.App;
+    new App.ProfileView({markdownInfo:#{@user.info.to_json}});
+  })

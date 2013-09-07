@@ -1,0 +1,41 @@
+!!!
+%html{:lang => "en"}
+  %head
+    %title Five
+    = stylesheet_link_tag    "application", media: "all"
+    = javascript_include_tag "application"
+    = csrf_meta_tags
+
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
+    %meta{:content => "Board games website", :name => "description"}/
+    %meta{:content => "Kmurph", :name => "author"}/
+
+    %title Jumbotron Template for Bootstrap
+    / Bootstrap core CSS
+    / Custom styles for this template
+    /[if lt IE 9]
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+  %body
+    .navbar.navbar-inverse.navbar-fixed-top
+      .container
+        .navbar-header
+          %button.navbar-toggle{"data-target" => ".navbar-collapse", "data-toggle" => "collapse", :type => "button"}
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          %a.navbar-brand{:href => "/"} Boardly
+        .navbar-collapse.collapse
+          %ul.nav.navbar-nav
+            %li.active= link_to "Home", root_url
+            %li= link_to "About", about_path
+            %li= link_to "Contact", contact_path
+
+          = render 'devise/menu/sign_in_crap'
+
+    / Main jumbotron for a primary marketing message or call to action
+    = yield
+    %hr/
+    %footer
+      %p © DndSite 20ever

@@ -1,0 +1,69 @@
+= render '/search', model:'user'
+
+-if @invite_group
+  %h4 Invite Players to #{link_to @invite_group.name, @invite_group}
+
+%table.table.table-striped#users{"data-invite-group-id" => @invite_group ? @invite_group.id : nil}
+  %thead
+    %tr
+      %th #
+      %th Name
+      %th Games played
+      %th City
+      %th Last sign in
+      - if @loc && @errors.empty?
+        - if @order_them
+          %th Distance away
+        - else
+          %th Distance from you
+      - if @invite_group
+        %th Invite
+  %tbody
+    - @users.each_with_index do |user,index|
+      - game_ids = user.preloaded_game_ids
+      %tr{id: "user_#{user.id}", "data-game-id" => game_ids.join(',')}
+        %td= index + 1
+        %td.name= link_to user.name, profile_path(user)
+        -
+        %td
+          - if game_ids.any?
+            - game = @games.find {|g| g.id == game_ids.first}
+            = link_to game.name, game
+            - if game_ids.length > 1
+              - count = game_ids.length - 1
+              - word = count > 1 ? 'others' : 'other'
+              \& #{link_to "#{count.to_s} #{word}...", '#', class: 'moar_games tip', title: "Load the #{word}"}
+        %td
+          - if user.city
+            = link_to user.city, users_path(zip: user.zip)
+          - else
+            unknown
+
+        %td= user.current_sign_in_at ? "#{time_ago_in_words(user.current_sign_in_at)} ago" : 'never signed in'
+        - if @loc && @errors.empty?
+          %td
+            - if user.city
+              = user.location.distance_from(@loc).round
+              miles
+            - else
+              unknown
+
+        - if @invite_group
+          %td
+            - if user.id != current_user.id
+              - if user.already_invited
+                invited...
+              - else
+                = link_to "Invite", @invite_group, class: 'invite'
+
+:javascript
+  $(function () {
+    var games = new App.GameList(#{@games.to_json(except:[:created_at, :updated_at])}, {options:true})
+    new App.UsersSearchView({
+      games: games,
+      current_user_id: #{user_signed_in? ? current_user.id : "null"},
+      game_ids: #{@selectedGames.map {|g| g.id}}
+    });
+
+    new App.UsersIndexView({games:games});
+  })

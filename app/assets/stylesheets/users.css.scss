@@ -1,0 +1,16 @@
+// Place all the styles related to the users controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+div.preview_info {
+  border: 1px dotted black;
+  padding: 10px;
+}
+div.enclose_info {
+  border: 1px dotted black;
+  padding: 10px;
+  width:600px;
+}
+
+.markdown_examples td {
+  border-top: none;
+}

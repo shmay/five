@@ -1,0 +1,20 @@
+%p
+  %strong Name:
+  = @game.name
+
+%p
+  %strong About:
+  = @game.about
+
+%p
+  %strong Users playing:
+  = @game.users.count
+  = link_to "see users", users_path(games:@game.id)
+
+%p
+  %strong Groups playing:
+  = @game.groups.count
+  = link_to "see groups", groups_path(games:@game.id)
+
+- if user_signed_in? && @game.user_id == current_user.id
+  = link_to 'Edit', edit_game_path(@game)

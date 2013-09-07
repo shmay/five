@@ -1,0 +1,13 @@
+%p#notice= notice
+%p
+  %strong Name:
+  = @game.name
+%p
+  %strong Slug:
+  = @game.slug
+%p
+  %strong Info:
+  = @game.info
+= link_to 'Edit', edit_game_path(@game)
+|
+\#{link_to 'Back', games_path}

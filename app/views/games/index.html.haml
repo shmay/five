@@ -1,0 +1,20 @@
+%h3 Listing games
+
+%table.table.table-striped#games
+  %thead
+    %tr
+      %th #
+      %th Name
+      %th About
+      %th Users playing
+      %th
+  %tbody
+    - @games.all.each_with_index do |game,index|
+      %tr{id:"game_#{game.id}"}
+        %td= index + 1
+        %td= link_to game.name, game
+        %td= game.about
+        %td= game.users.count
+        %td= link_to "I play this game", '#', class: 'play_game'
+
+= link_to 'Add a Game', new_game_path, class: 'btn btn-primary'
