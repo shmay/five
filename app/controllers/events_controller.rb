@@ -4,7 +4,18 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    @events = Event.all
+    game_ids = []
+    @errors = []
+    @selectedGames = []
+
+    if params[:games]
+      game_ids = params[:games].split(',')
+      @selectedGames = Game.where(id:game_ids)
+    end
+
+    @games = Game.all
+    @events = Event.all_events
+    @games = Game.all
   end
 
   # GET /events/1

@@ -6,6 +6,7 @@ class Location < ActiveRecord::Base
   after_save :geocode_address
   belongs_to :user
   belongs_to :group
+  belongs_to :event
 
   def map_address
     "#{self.address}, #{self.city}, #{self.state}"

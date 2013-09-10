@@ -33,6 +33,8 @@ groups = []
       g.games << games[t]
     end
   end
+
+  groups << g
 end
 
 zips = [93401,93401,93405,93406,95014,95015]
@@ -51,5 +53,24 @@ emails = ['kmurph73@gmail.com', 'jayD@dibbs.dev', 'lew@robbs.dev', 'someguy@dibb
 
   rand(2).times do |t|
     user.games << games[t]
+  end
+end
+
+start_times = [DateTime.new(2014, 2, 2, 16, 30), DateTime.new(2014, 3, 3, 16, 30)]
+finish_times = [DateTime.new(2014, 2, 2, 19, 30), DateTime.new(2014, 3, 3, 19, 30)]
+abouts = ['yarrrrrrrrrrrrr', 'some crazy event']
+titles = ['eventy1', 'eventy2']
+zips = [93401,90210]
+
+2.times do |n|
+  event = Event.create! start_time: start_times[n], finish_time: finish_times[n], title: titles[n], about: abouts[n]
+
+  location = Location.new zip:zips[n].to_s
+  location.event = event
+  location.save
+
+  rand(2).times do |t|
+    event.games << games[t]
+    event.groups << groups[t]
   end
 end

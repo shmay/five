@@ -19,7 +19,7 @@
       - @selectedGames.each_with_index do |game,index|
         #{link_to game.name, game}#{index + 2 == len ? " or" : !(index + 1 == len) ? ",":""}
 
-.well{id: "#{model}s_search"}
+.well#search
   = form_tag "/#{model}s", method:'get', class: 'form-inline' do
     Find players near
     %input.input-small{placeholder:'90210', name:'zip', value:params[:zip]}
@@ -38,3 +38,5 @@
           %span.game_entry.label.label-primary{id:"game_#{g.id}"}
             %a{target:'_blank', :href => "games/#{g.slug}"}= g.name
             %i.pointer.icon.icon-remove{style:'margin-left:3px'}
+
+    %input{type:'submit', class: 'btn btn-primary', value: 'Submit'}

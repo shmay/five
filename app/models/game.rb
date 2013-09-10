@@ -3,6 +3,7 @@ class Game < ActiveRecord::Base
   friendly_id :name, use: :slugged
 
   has_and_belongs_to_many :groups
+  has_and_belongs_to_many :events
 
   has_many :playings
   has_many :users, through: :playings

@@ -1,6 +1,6 @@
 class CreateStatuses < ActiveRecord::Migration
   def change
-    create_table :statuses do |t|
+    create_table :statuses, id: false do |t|
       t.references :event, :user
       t.integer :status
 

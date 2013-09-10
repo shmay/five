@@ -8,7 +8,7 @@ class CreateLocations < ActiveRecord::Migration
       t.string :state
       t.string :country
 
-      t.references :group, :user
+      t.references :group, :user, :event
 
       t.timestamps
     end

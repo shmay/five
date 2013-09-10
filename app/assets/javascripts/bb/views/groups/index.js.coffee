@@ -23,3 +23,5 @@ App.GroupsView = Backbone.View.extend
         td.html "<a href='#' class='leave'>leave</a>"
       error: ->
         alert('group could not be joined')
+
+App.UsersGroupsView.mixin(App.IndexMixin)

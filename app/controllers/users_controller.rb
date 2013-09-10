@@ -6,7 +6,6 @@ class UsersController < ApplicationController
   def index
     game_ids = []
     @errors = []
-    @selectedGames = []
     @games = Game.all
 
     if user_signed_in? && params[:invite_group] && params[:invite_group].to_i > 0
@@ -18,12 +17,8 @@ class UsersController < ApplicationController
     @zip = params[:zip].to_i == 0 ? nil : params[:zip]
     @within = params[:within].to_i == 0 ? nil : params[:within].to_i
     @order_them = false
-    game_filter_type = 'or'
 
-    if params[:games]
-      game_ids = params[:games].split(',')
-      @selectedGames = Game.where(id:game_ids)
-    end
+    select = ['users.id AS id', 'users.name AS name', :current_sign_in_at]
 
     if @zip
       @loc = Geokit::Geocoders::Google3Geocoder.geocode @zip
@@ -33,12 +28,13 @@ class UsersController < ApplicationController
     end
 
     if @loc && !@loc.city
-      @errors << "Couldn't find that zip!  Please come again."
+      @errors << "Couldn't find that zip!  Query was not performed.  Thank you, come again."
     end
 
     if @errors.empty?
       @users = User.query_users(@loc,game_ids,@within,@order_them,@invite_group)
     end
+    Five::Query.handle_params_then_get_models(params, user_signed_in? ? current_user : nil)
   end
 
 
@@ -60,12 +56,12 @@ class UsersController < ApplicationController
 
     if Grouping.where(user_id:current_user.id,group_id:@group.id,admin:true).first
       if Invite.where(group_id:@group,user_id:current_user,invitee_id:invitee.id).first
-        error_message = "Maybe I'm high, but according to the computery stuff I just performed, such an invite already exists."
+        error_message = "Maybe I'm just high, but according to the computery stuff I just performed, such an invite already exists."
       else
         invite = Invite.create(group_id:@group.id,user_id:current_user.id, invitee_id:invitee.id)
       end
     else
-      error_message = "The f'n h bro?  You are not allowed to send invites for this group."
+      error_message = "The f'n h breh?  You are not allowed to send invites for this group."
     end
 
     respond_to do |format|

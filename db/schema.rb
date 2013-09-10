@@ -20,15 +20,20 @@ ActiveRecord::Schema.define(version: 20130907171150) do
     t.string   "title"
     t.text     "about"
     t.integer  "user_id"
-    t.date     "when"
+    t.datetime "start_time"
+    t.datetime "finish_time"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "events_games", force: true do |t|
+  create_table "events_games", id: false, force: true do |t|
+    t.integer "event_id"
+    t.integer "game_id"
   end
 
-  create_table "events_groups", force: true do |t|
+  create_table "events_groups", id: false, force: true do |t|
+    t.integer "event_id"
+    t.integer "group_id"
   end
 
   create_table "games", force: true do |t|
@@ -66,6 +71,7 @@ ActiveRecord::Schema.define(version: 20130907171150) do
   create_table "invites", force: true do |t|
     t.integer  "user_id"
     t.integer  "group_id"
+    t.integer  "event_id"
     t.integer  "invitee_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -80,6 +86,7 @@ ActiveRecord::Schema.define(version: 20130907171150) do
     t.string   "country"
     t.integer  "group_id"
     t.integer  "user_id"
+    t.integer  "event_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -93,7 +100,7 @@ ActiveRecord::Schema.define(version: 20130907171150) do
     t.datetime "updated_at"
   end
 
-  create_table "statuses", force: true do |t|
+  create_table "statuses", id: false, force: true do |t|
     t.integer  "event_id"
     t.integer  "user_id"
     t.integer  "status"

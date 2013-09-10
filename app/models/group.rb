@@ -4,6 +4,7 @@ class Group < ActiveRecord::Base
   has_many :invites
 
   has_and_belongs_to_many :games
+  has_and_belongs_to_many :events
 
   has_many :groupings
   has_many :users, through: :groupings
