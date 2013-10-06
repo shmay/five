@@ -1,5 +1,5 @@
 class Group < ActiveRecord::Base
-  has_one :location
+  include IndexQuery
 
   has_many :invites
 

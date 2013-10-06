@@ -24,4 +24,4 @@ App.GroupsView = Backbone.View.extend
       error: ->
         alert('group could not be joined')
 
-App.UsersGroupsView.mixin(App.IndexMixin)
+App.GroupsView.mixin(App.IndexMixin)

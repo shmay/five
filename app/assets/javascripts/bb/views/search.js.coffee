@@ -8,9 +8,9 @@ App.SearchView = Backbone.View.extend
   initialize: ->
     @games = @options.games
     @selectedGames = new App.GameList()
-    gameIds = @options.game_ids
-    if gameIds and gameIds.length
-      @selectedGames.add(@games.get(gameId)) for gameId in gameIds
+    selectedGameIds = @options.selected_game_ids
+    if selectedGameIds and selectedGameIds.length
+      @selectedGames.add(@games.get(gameId)) for gameId in selectedGameIds
 
     new App.GamesBoxView
       el: @$el
@@ -22,8 +22,9 @@ App.SearchView = Backbone.View.extend
 
     form = @$('form:first')
 
-    form.prepend "<input name='games' type='hidden' value='#{@selectedGames.pluck('id').join(',')}' />"
+    if @selectedGames.length
+      form.prepend "<input name='game_ids' type='hidden' value='#{@selectedGames.pluck('id').join(',')}' />"
 
-    @$('input[name=commit]').val('Submitting...').attr('disabled', 'disabled')
+    @$('input[type=submit]').val('Submitting...').attr('disabled', 'disabled')
     @$el.off 'submit form'
     form.submit()

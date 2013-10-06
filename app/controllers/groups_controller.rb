@@ -5,7 +5,8 @@ class GroupsController < ApplicationController
   # GET /groups
   # GET /groups.json
   def index
-    @groups = Group.all
+    current_user = user_signed_in? ? current_user : nil
+    @errors,@groups,@within,@order_them,@loc,@zip,@games,@selected_games = Group.index(params,current_user)
   end
 
   # GET /groups/1

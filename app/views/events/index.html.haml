@@ -1,3 +1,5 @@
+= render '/search', model:'event'
+
 %h1
   Listing events
   %small= link_to 'New Event', new_event_path
@@ -10,8 +12,10 @@
       %th About
       %th Games played
       %th City
-      %th Start time
-      %th End time
+      - if @loc && @errors.empty?
+        %th City
+      %th Start
+      %th Finish
   %tbody
     - strf = '%-m/%-d/%y %l:%M %p'
     - @events.each_with_index do |event,index|
@@ -36,8 +40,8 @@
 
         - if @loc && @errors.empty?
           %td
-            - if user.city
-              = user.location.distance_from(@loc).round
+            - if event.city
+              = event.distance.round
               miles
             - else
               unknown
@@ -59,11 +63,10 @@
 
     new App.SearchView({
       games: games,
-      current_user_id: #{user_signed_in? ? current_user.id : "null"},
-      game_ids: #{@selectedGames.map {|g| g.id}}
+      selected_game_ids: #{@selected_games.map {|g| g.id }}
     });
 
-    new App.GroupsIndexView({
+    new App.GroupsView({
       current_user_id: #{user_signed_in? ? current_user.id : "null"},
       games:games
     });

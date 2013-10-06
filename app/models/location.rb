@@ -34,4 +34,5 @@ class Location < ActiveRecord::Base
   def slugged_city
     city.downcase.gsub(/\s/, '_')
   end
+
 end

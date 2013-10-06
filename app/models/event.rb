@@ -1,11 +1,13 @@
 class Event < ActiveRecord::Base
+  include IndexQuery
+
   has_many :statuses
   has_many :users, through: :statuses
 
-  has_one :location
-
   has_and_belongs_to_many :games
   has_and_belongs_to_many :groups
+
+  validates :user_id, presence: true
 
   def self.all_events
     select('events.*', 'locations.city AS city',

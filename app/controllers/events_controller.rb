@@ -4,23 +4,14 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    game_ids = []
-    @errors = []
-    @selectedGames = []
-
-    if params[:games]
-      game_ids = params[:games].split(',')
-      @selectedGames = Game.where(id:game_ids)
-    end
-
-    @games = Game.all
-    @events = Event.all_events
-    @games = Game.all
+    current_user = user_signed_in? ? current_user : nil
+    @errors,@events,@within,@order_them,@loc,@zip,@games,@selected_games = Event.index(params,current_user)
   end
 
   # GET /events/1
   # GET /events/1.json
   def show
+    @creator = User.find @event.user_id
   end
 
   # GET /events/new

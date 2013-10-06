@@ -22,8 +22,13 @@ App.vent = v
 
 Backbone.View.mixin = (mixin) ->
   proto = @prototype
+
+  if !proto.events
+    proto.events = {}
+
   _.extend proto.events, mixin.events
   _.extend proto, mixin.methods
+
   proto.initialize = _.wrap proto.initialize, (initialize) ->
     initialize.call(this)
     mixin.initialize.call(this)

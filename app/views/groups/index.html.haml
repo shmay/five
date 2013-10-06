@@ -1,4 +1,4 @@
-%h3 Listing groups
+= render '/search', model:'group'
 
 %table.table.table-striped#groups
   %thead
@@ -8,13 +8,46 @@
       %th Games played
       %th City
       %th Members
+      - if @loc && @errors.empty?
+        - if @order_them
+          %th Distance away
+        - else
+          %th Distance from you
   %tbody
     - @groups.all.each_with_index do |group,index|
-      %tr{id:"group_#{group.id}"}
+      - game_ids = group.preloaded_game_ids
+      %tr{id: "group_#{group.id}", "data-game-id" => game_ids.join(',')}
         %td= index + 1
         %td= link_to group.name, group
-        %td= comma_separated_links_for(group.games)
+        %td
+          - if game_ids.any?
+            - game = @games.find {|g| g.id == game_ids.first}
+            = link_to game.name, game
+            - if game_ids.length > 1
+              - count = game_ids.length - 1
+              - word = count > 1 ? 'others' : 'other'
+              \& #{link_to "#{count.to_s} #{word}...", '#', class: 'moar_games tip', title: "Load the #{word}"}
         %td= link_to group.location.city, groups_path(city: group.location.city)
-        %td= group.users.count
+        %td= group.members_count
+        - if @loc && @errors.empty?
+          %td
+            - if group.city
+              = group.distance.round
+              miles
+            - else
+              unknown
 
 = link_to 'New Group', new_group_path, class: 'btn btn-primary'
+:javascript
+  $(function () {
+    var games = new App.GameList(#{@games.to_json(except:[:created_at, :updated_at])}, {options:true})
+    new App.SearchView({
+      games: games,
+      selected_game_ids: #{@selected_games.map {|g| g.id }}
+    });
+
+    new App.GroupsView({
+      current_user_id: #{user_signed_in? ? current_user.id : "null"},
+      games:games
+    });
+  })

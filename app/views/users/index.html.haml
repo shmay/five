@@ -42,7 +42,7 @@
         - if @loc && @errors.empty?
           %td
             - if user.city
-              = user.location.distance_from(@loc).round
+              = user.distance.round
               miles
             - else
               unknown
@@ -60,7 +60,7 @@
     var games = new App.GameList(#{@games.to_json(except:[:created_at, :updated_at])}, {options:true})
     new App.SearchView({
       games: games,
-      game_ids: #{params[:game_ids]}
+      selected_game_ids: #{@selected_games.map {|g| g.id }}
     });
 
     new App.UsersIndexView({

@@ -1,6 +1,6 @@
 module Five
   class Query
-    def self.handle_params_then_get_models(model,params,select,current_user)
+    def self.index(model,params,select,current_user)
       errors = []
       order_them = false
       game_ids = []
@@ -33,8 +33,10 @@ module Five
       end
 
       if errors.empty?
-        self.get_models(model,select,loc,game_ids,within,order_them,options)
+        query = self.get_models(model,select,loc,game_ids,within,order_them,options)
       end
+
+      return errors,query,within,loc,zip,game_ids
     end
 
     def self.get_models(model, select, location, game_ids, within, order_them, options)

@@ -4,15 +4,20 @@ class User < ActiveRecord::Base
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable
 
+  include IndexQuery
   validates :name, length: { minimum: 3 }
-  has_one :location
+
+  has_many :invites
 
   has_many :playings
   has_many :games, through: :playings
-  has_many :invites
 
   has_many :groupings
   has_many :groups, through: :groupings
+
+  def owns_event?(event)
+    id == event.user_id
+  end
 
   def self.group_members(group)
     select(

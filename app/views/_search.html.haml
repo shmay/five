@@ -6,22 +6,22 @@
         %li= e
 - else
   %h4
-    Listing #{model == 'user' ? 'players' : 'groups'}#{@loc && @within ? ',' : ''}
+    Listing #{model == 'user' ? 'players' : "#{model}s"}#{@loc && @within ? ',' : ''}
 
     - if @loc && @order_them
       - if @within
         within #{@within} miles,
 
       by distance from #{@loc.city}
-    - if @selectedGames.any?
+    - if @selected_games.any?
       that play
-      - len = @selectedGames.length
-      - @selectedGames.each_with_index do |game,index|
+      - len = @selected_games.length
+      - @selected_games.each_with_index do |game,index|
         #{link_to game.name, game}#{index + 2 == len ? " or" : !(index + 1 == len) ? ",":""}
 
 .well#search
   = form_tag "/#{model}s", method:'get', class: 'form-inline' do
-    Find players near
+    Find #{model}s near
     %input.input-small{placeholder:'90210', name:'zip', value:params[:zip]}
     that play
     %input.games-typeahead.input-medium{placeholder: 'Carcassonne'}
@@ -32,9 +32,9 @@
         %option{value:item, selected: item == @within ? true : false}
           = item.to_i == 0 ? 'Anywhere' : item.to_s + " miles"
     #game_list
-      %span#game-title-bar{class: "#{'hide' if @selectedGames.empty?}"} Filter by games:
-      - if @selectedGames.any?
-        - @selectedGames.each do |g|
+      %span#game-title-bar{class: "#{'hide' if @selected_games.empty?}"} Filter by games:
+      - if @selected_games.any?
+        - @selected_games.each do |g|
           %span.game_entry.label.label-primary{id:"game_#{g.id}"}
             %a{target:'_blank', :href => "games/#{g.slug}"}= g.name
             %i.pointer.icon.icon-remove{style:'margin-left:3px'}

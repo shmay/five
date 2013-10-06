@@ -1,0 +1,20 @@
+%h3= @event.title
+%p
+  %strong About:
+  = @event.about
+
+- strf = '%-m/%-d/%y %l:%M %p'
+%p
+  %strong Start:
+  = @event.start_time.strftime(strf)
+
+%p
+  %strong Finish:
+  = @event.finish_time.strftime(strf)
+
+%p
+  %strong Creator:
+  = link_to @creator.name, profile_path(@creator)
+
+- if user_signed_in? && current_user.owns_event?(@event)
+  = link_to 'Edit', edit_event_path(@event)

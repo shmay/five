@@ -1,7 +1,7 @@
 App = @App
 _ = @_
 
-App.IndexView = Backbone.View.extend
+App.EventsView = Backbone.View.extend
   el: '#events'
 
-App.UsersEventsView.mixin(App.IndexMixin)
+App.EventsView.mixin(App.IndexMixin)

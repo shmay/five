@@ -4,39 +4,9 @@ class UsersController < ApplicationController
   before_action :ensure_correct_user, only: [:edit, :update]
 
   def index
-    game_ids = []
-    @errors = []
-    @games = Game.all
-
-    if user_signed_in? && params[:invite_group] && params[:invite_group].to_i > 0
-      if Grouping.where(group_id:params[:invite_group].to_i,user_id: current_user.id, admin:true).first
-        @invite_group = Group.find_by_id(params[:invite_group].to_i)
-      end
-    end
-
-    @zip = params[:zip].to_i == 0 ? nil : params[:zip]
-    @within = params[:within].to_i == 0 ? nil : params[:within].to_i
-    @order_them = false
-
-    select = ['users.id AS id', 'users.name AS name', :current_sign_in_at]
-
-    if @zip
-      @loc = Geokit::Geocoders::Google3Geocoder.geocode @zip
-      @order_them = true
-    elsif user_signed_in? && current_user.location
-      @loc = Geokit::Geocoders::Google3Geocoder.geocode current_user.location.zip
-    end
-
-    if @loc && !@loc.city
-      @errors << "Couldn't find that zip!  Query was not performed.  Thank you, come again."
-    end
-
-    if @errors.empty?
-      @users = User.query_users(@loc,game_ids,@within,@order_them,@invite_group)
-    end
-    Five::Query.handle_params_then_get_models(params, user_signed_in? ? current_user : nil)
+    current_user = user_signed_in? ? current_user : nil
+    @errors,@users,@within,@order_them,@loc,@zip,@games,@selected_games = User.index(params,current_user)
   end
-
 
   def show
     @markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, :autolink => true, :space_after_headers => true)
@@ -56,12 +26,12 @@ class UsersController < ApplicationController
 
     if Grouping.where(user_id:current_user.id,group_id:@group.id,admin:true).first
       if Invite.where(group_id:@group,user_id:current_user,invitee_id:invitee.id).first
-        error_message = "Maybe I'm just high, but according to the computery stuff I just performed, such an invite already exists."
+        error_message = "Maybe I'm high, but according to the computery stuff I just performed, such an invite already exists."
       else
         invite = Invite.create(group_id:@group.id,user_id:current_user.id, invitee_id:invitee.id)
       end
     else
-      error_message = "The f'n h breh?  You are not allowed to send invites for this group."
+      error_message = "The f'n h bro?  You are not allowed to send invites for this group."
     end
 
     respond_to do |format|
